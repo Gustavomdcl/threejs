@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>My first three.js app</title>
+		<style>
+			body { margin: 0; }
+			canvas { width: 100%; height: 100% }
+		</style>
+	</head>
+	<body>
+    <script src="js/three.js"></script>
+    <script src="js/GLTFLoader.js"></script>
+		<script>
+      //SETUP ==========
+        //SCENE
+          var scene = new THREE.Scene();
+        //CAMERA
+          var camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+        //RENDERER
+          var renderer = new THREE.WebGLRenderer();
+          renderer.setSize( window.innerWidth, window.innerHeight );
+          document.body.appendChild( renderer.domElement );
+        //LIGHTS
+          var lights = [];
+          lights[ 0 ] = new THREE.PointLight( 0xffffff, .4, 0 );
+          lights[ 1 ] = new THREE.PointLight( 0xffffff, .3, 0 );
+          lights[ 2 ] = new THREE.PointLight( 0xffffff, .8, 0 );
+
+          lights[ 0 ].position.set( 0, 200, 0 );
+          lights[ 1 ].position.set( 100, 200, 100 );
+          lights[ 2 ].position.set( - 100, - 200, - 100, 100 );
+
+          this.scene.add( lights[ 0 ] );
+          this.scene.add( lights[ 1 ] );
+          this.scene.add( lights[ 2 ] );
+
+          var ambientLight = new THREE.AmbientLight( 0x916262 );
+          this.scene.add( ambientLight );
+
+          var light = new THREE.HemisphereLight( 0xffffbb, 0x080820, 1 );
+          this.scene.add( light );
+        //CUBE
+          var geometry = new THREE.BoxGeometry( 1, 1, 1 );
+          var material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
+          var cube = new THREE.Mesh( geometry, material );
+          scene.add(cube);
+        //MODEL
+          var model;
+          var loader = new THREE.GLTFLoader();
+          // loader.load( '../model/day18/scene.gltf', function ( gltf ) {
+          // loader.load( '../model/matilda/scene.gltf', function ( gltf ) {
+          loader.load( '../model/viking_room/scene.gltf', function ( gltf ) {
+            model = gltf.scene;
+            scene.add(model);
+            animate();
+
+            // gltf.animations; // Array<THREE.AnimationClip>
+            // gltf.scene; // THREE.Scene
+            // gltf.scenes; // Array<THREE.Scene>
+            // gltf.cameras; // Array<THREE.Camera>
+            // gltf.asset; // Object
+          }, function ( xhr ) {
+            console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
+          }, function ( error ) {
+            console.error( error );
+          } );
+
+      //ACTIONS ==========
+        //RENDER LOOP
+          function animate() { //This will create a loop that causes the renderer to draw the scene every time the screen is refreshed
+            requestAnimationFrame(animate);
+            renderer.render(scene,camera);
+            animation();
+          }
+
+        //ANIMATION
+        function animation(){
+          //CUBE
+            cube.rotation.x += 0.01; //Rotate cube
+            cube.rotation.y += 0.01;
+          //MODEL
+            model.rotation.x += 0.01; //Rotate model
+            model.rotation.y += 0.01;
+        }
+
+        //CAMERA
+          //CUBE
+            camera.position.z = 50;
+          //MATILDA
+            camera.position.z = 150; //Move the camera
+            camera.position.y = 100; //Move the camera
+          //VIKING
+            camera.position.z = 30; //Move the camera
+            camera.position.y = 0; //Move the camera
+
+        //TEXTURE
+          renderer.gammaOutput = true;
+          renderer.gammaFactor = 2.2;
+          
+          // scene.background = new THREE.Color( 0xff0000 );
+		</script>
+	</body>
+</html>
